@@ -1,7 +1,9 @@
 package com.redjen.instagram.domain;
 
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,10 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
+@AllArgsConstructor
+@Builder
 @Getter
+@NoArgsConstructor
 public class Member {
 
     @Id
