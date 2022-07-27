@@ -1,6 +1,6 @@
 package com.redjen.instagram.repository;
 
-import com.redjen.instagram.domain.Member;
+import com.redjen.instagram.domain.entity.Member;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

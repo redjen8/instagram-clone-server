@@ -1,4 +1,4 @@
-package com.redjen.instagram.domain;
+package com.redjen.instagram.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
