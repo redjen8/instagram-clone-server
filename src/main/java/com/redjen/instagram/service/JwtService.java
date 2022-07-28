@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 
 @Log4j2
@@ -30,11 +29,11 @@ public class JwtService {
         return "";
     }
 
-    public String publishAccessToken() {
+    public String publishAccessToken(Long userId) {
         return "";
     }
 
-    public String publishRefreshToken() {
+    public String publishRefreshToken(Long userId) {
         return "";
     }
 

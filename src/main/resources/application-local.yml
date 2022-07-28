@@ -24,3 +24,6 @@ spring:
 logging:
   level:
     com.redjen: DEBUG
+
+jwt:
+  secret: cmVkamVuc3ByaW5nbWFzdGVyaW5zdGFncmFtY2xvbmVmdW4K
