@@ -17,6 +17,10 @@ spring:
     database: h2
     database-platform: org.hibernate.dialect.H2Dialect
 
+  config:
+    activate:
+      on-profile: local
+
 logging:
   level:
     com.redjen: DEBUG
