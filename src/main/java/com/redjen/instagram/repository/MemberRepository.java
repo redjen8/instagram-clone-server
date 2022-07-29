@@ -23,4 +23,10 @@ public class MemberRepository {
     public Member findOneByMemberId(String id) {
         return em.find(Member.class, id);
     }
+
+    public String updateRefreshToken(Long id, String newToken) {
+        Member updateMember = em.find(Member.class, id);
+        updateMember.setRefreshToken(newToken);
+        return newToken;
+    }
 }
