@@ -28,4 +28,11 @@ public class JwtServiceTest {
         String accessToken = jwtService.publishRefreshToken(userId);
         assertThat(accessToken).matches("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)");
     }
+
+    @Test
+    public void tokenExpireCheckTest() {
+        Long userId = 1L;
+        String accessToken = jwtService.publishAccessToken(userId);
+        assertThat(jwtService.isTokenExpired(accessToken)).isTrue();
+    }
 }

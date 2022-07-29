@@ -37,4 +37,8 @@ public class JwtService {
         return "";
     }
 
+    public Boolean isTokenExpired(String token) {
+        return false;
+    }
+
 }
