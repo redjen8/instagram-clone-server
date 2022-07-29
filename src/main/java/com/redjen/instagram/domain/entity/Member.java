@@ -1,9 +1,6 @@
 package com.redjen.instagram.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 public class Member {
 
