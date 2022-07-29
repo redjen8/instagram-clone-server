@@ -1,9 +1,11 @@
 package com.redjen.instagram.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.redjen.instagram.domain.common.CustomException;
+import com.redjen.instagram.domain.common.ErrorCode;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,5 +54,21 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + tokenExpireTime))
                 .signWith(jwtKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Claims validateTokenAndReturnBody(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e1) {
+            log.error("Invalid or Illegal JWT Token used.");
+            throw new CustomException(ErrorCode.INVALID_FORMAT_TOKEN);
+        } catch (ExpiredJwtException e2) {
+            log.error("Expired JWT Token used.");
+            throw new CustomException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+        }
     }
 }
