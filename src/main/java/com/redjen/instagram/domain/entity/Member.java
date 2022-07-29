@@ -44,4 +44,7 @@ public class Member {
 
     @Column(name="is_social_flag")
     private Boolean isSSO;
+
+    @Column(name="refresh_token")
+    private String refreshToken;
 }
