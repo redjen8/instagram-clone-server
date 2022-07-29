@@ -43,7 +43,8 @@ public class JwtService {
     }
 
     public Boolean isTokenExpired(String token) {
-        return false;
+        Date expireDate = validateTokenAndReturnBody(token).getExpiration();
+        return expireDate.before(new Date());
     }
 
     private String generateNewToken(Long id, Long tokenExpireTime) {
