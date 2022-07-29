@@ -1,5 +1,7 @@
 package com.redjen.instagram.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Date;
 
 @Log4j2
 @Service
@@ -30,15 +33,24 @@ public class JwtService {
     }
 
     public String publishAccessToken(Long userId) {
-        return "";
+        return generateNewToken(userId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     public String publishRefreshToken(Long userId) {
-        return "";
+        return generateNewToken(userId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     public Boolean isTokenExpired(String token) {
         return false;
     }
 
+    private String generateNewToken(Long id, Long tokenExpireTime) {
+        return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .claim("userId", id)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpireTime))
+                .signWith(jwtKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
 }
