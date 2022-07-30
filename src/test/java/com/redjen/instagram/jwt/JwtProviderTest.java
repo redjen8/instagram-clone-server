@@ -1,6 +1,6 @@
 package com.redjen.instagram.jwt;
 
-import com.redjen.instagram.service.JwtService;
+import com.redjen.instagram.config.security.JwtProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,29 +10,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("local")
 @SpringBootTest
-public class JwtServiceTest {
+public class JwtProviderTest {
 
     @Autowired
-    JwtService jwtService;
+    JwtProvider jwtProvider;
 
     @Test
     public void createAccessTokenTest() {
         Long userId = 1L;
-        String accessToken = jwtService.publishAccessToken(userId);
+        String accessToken = jwtProvider.publishAccessToken(userId);
         assertThat(accessToken).matches("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)");
     }
 
     @Test
     public void createRefreshTokenTest() {
         Long userId = 1L;
-        String accessToken = jwtService.publishRefreshToken(userId);
+        String accessToken = jwtProvider.publishRefreshToken(userId);
         assertThat(accessToken).matches("(^[\\w-]*\\.[\\w-]*\\.[\\w-]*$)");
     }
 
     @Test
     public void tokenExpireCheckTest() {
         Long userId = 1L;
-        String accessToken = jwtService.publishAccessToken(userId);
-        assertThat(jwtService.isTokenValid(accessToken)).isFalse();
+        String accessToken = jwtProvider.publishAccessToken(userId);
+        assertThat(jwtProvider.isTokenValid(accessToken)).isFalse();
     }
 }
