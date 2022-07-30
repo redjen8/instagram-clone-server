@@ -1,6 +1,6 @@
 package com.redjen.instagram.member;
 
-import com.redjen.instagram.service.JwtService;
+import com.redjen.instagram.config.security.JwtProvider;
 import com.redjen.instagram.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ public class LoginTest {
     MemberService memberService;
 
     @Autowired
-    JwtService jwtService;
+    JwtProvider jwtProvider;
 
     @DisplayName("사용자 첫 로그인")
     @Test

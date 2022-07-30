@@ -1,89 +1,34 @@
 package com.redjen.instagram.service;
 
-import com.redjen.instagram.domain.common.CustomException;
-import com.redjen.instagram.domain.common.ErrorCode;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import com.redjen.instagram.config.security.JwtProvider;
+import com.redjen.instagram.domain.common.LoginToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Key;
-import java.util.Date;
-
-@Log4j2
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 1일
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
-    private final UserDetailsService userDetailsService;
-    private final Key jwtKey;
+    private final JwtProvider jwtProvider;
 
-    public JwtService(@Value("${jwt.secret}") String jwtSecret, UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-        byte[] byteKey = Decoders.BASE64.decode(jwtSecret);
-        this.jwtKey = Keys.hmacShaKeyFor(byteKey);
+    public LoginToken createToken(Long id) {
+        String accessToken = jwtProvider.publishAccessToken(id);
+        String refreshToken = jwtProvider.publishRefreshToken(id);
+        return LoginToken.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .expireSec(jwtProvider.getAccessTokenExpireTime())
+                .build();
     }
 
-    public String getAccessTokenFromRequest(HttpServletRequest request) {
-        return request.getHeader("access-token");
-    }
-
-    public String getRefreshTokenFromRequest(HttpServletRequest request) {
-        return request.getHeader("refresh-token");
-    }
-
-    public String publishAccessToken(Long userId) {
-        return generateNewToken(userId, ACCESS_TOKEN_EXPIRE_TIME);
-    }
-
-    public String publishRefreshToken(Long userId) {
-        return generateNewToken(userId, REFRESH_TOKEN_EXPIRE_TIME);
-    }
-
-    public Boolean isTokenValid(String token) {
-        Date expireDate = validateTokenAndReturnBody(token).getExpiration();
-        return expireDate.before(new Date());
-    }
-
-    public Authentication getAuthentication(String token) {
-        Claims tokenBody = validateTokenAndReturnBody(token);
-        String userId = tokenBody.get("userId").toString();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    private String generateNewToken(Long id, Long tokenExpireTime) {
-        return Jwts.builder()
-                .setHeaderParam("typ", "JWT")
-                .claim("userId", id)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpireTime))
-                .signWith(jwtKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    private Claims validateTokenAndReturnBody(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(jwtKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e1) {
-            log.error("Invalid or Illegal JWT Token used.");
-            throw new CustomException(ErrorCode.INVALID_FORMAT_TOKEN);
-        } catch (ExpiredJwtException e2) {
-            log.error("Expired JWT Token used.");
-            throw new CustomException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+    public LoginToken createTokenByRefreshToken(String refreshToken) {
+        Long id = jwtProvider.getIdFromToken(refreshToken);
+        String accessToken = jwtProvider.publishAccessToken(id);
+        String newRefreshToken = jwtProvider.publishRefreshToken(id);
+        return LoginToken.builder()
+                .accessToken(accessToken)
+                .refreshToken(newRefreshToken)
+                .expireSec(jwtProvider.getAccessTokenExpireTime())
+                .build();
     }
 }
