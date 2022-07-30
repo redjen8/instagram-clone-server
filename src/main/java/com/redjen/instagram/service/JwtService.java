@@ -8,6 +8,10 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +24,11 @@ public class JwtService {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 1일
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+    private final UserDetailsService userDetailsService;
     private final Key jwtKey;
 
-    public JwtService(@Value("${jwt.secret}") String jwtSecret) {
+    public JwtService(@Value("${jwt.secret}") String jwtSecret, UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
         byte[] byteKey = Decoders.BASE64.decode(jwtSecret);
         this.jwtKey = Keys.hmacShaKeyFor(byteKey);
     }
@@ -46,6 +52,13 @@ public class JwtService {
     public Boolean isTokenValid(String token) {
         Date expireDate = validateTokenAndReturnBody(token).getExpiration();
         return expireDate.before(new Date());
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims tokenBody = validateTokenAndReturnBody(token);
+        String userId = tokenBody.get("userId").toString();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     private String generateNewToken(Long id, Long tokenExpireTime) {
