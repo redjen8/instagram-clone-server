@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 
@@ -26,12 +27,12 @@ public class JwtService {
         this.jwtKey = Keys.hmacShaKeyFor(byteKey);
     }
 
-    public String getAccessTokenFromRequest() {
-        return "";
+    public String getAccessTokenFromRequest(HttpServletRequest request) {
+        return request.getHeader("access-token");
     }
 
-    public String getRefreshTokenFromRequest() {
-        return "";
+    public String getRefreshTokenFromRequest(HttpServletRequest request) {
+        return request.getHeader("refresh-token");
     }
 
     public String publishAccessToken(Long userId) {
@@ -42,7 +43,7 @@ public class JwtService {
         return generateNewToken(userId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
-    public Boolean isTokenExpired(String token) {
+    public Boolean isTokenValid(String token) {
         Date expireDate = validateTokenAndReturnBody(token).getExpiration();
         return expireDate.before(new Date());
     }

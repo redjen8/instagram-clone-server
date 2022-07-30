@@ -33,6 +33,6 @@ public class JwtServiceTest {
     public void tokenExpireCheckTest() {
         Long userId = 1L;
         String accessToken = jwtService.publishAccessToken(userId);
-        assertThat(jwtService.isTokenExpired(accessToken)).isFalse();
+        assertThat(jwtService.isTokenValid(accessToken)).isFalse();
     }
 }
