@@ -39,7 +39,6 @@ public class MemberService {
                 .isPublic(true)
                 .isSSO(false)
                 .build();
-
         memberRepository.register(newMember);
         return newMember;
     }
@@ -49,8 +48,7 @@ public class MemberService {
         if (isMemberExists.isEmpty()) throw new CustomException(ErrorCode.LOGIN_ID_NOT_EXIST);
 
         Member userMember = isMemberExists.get();
-        String encodedPassword = passwordEncoder.encode(loginReqParam.getPassword());
-        if (!encodedPassword.equals(userMember.getPassword())) throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_EQUAL);
+        if (!passwordEncoder.matches(loginReqParam.getPassword(), userMember.getPassword())) throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_EQUAL);
 
         LoginToken loginToken = jwtService.createToken(userMember.getMemberId());
 
