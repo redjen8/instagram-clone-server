@@ -35,4 +35,11 @@ public class JwtProviderTest {
         String accessToken = jwtProvider.publishAccessToken(userId);
         assertThat(jwtProvider.isTokenValid(accessToken)).isFalse();
     }
+
+    @Test
+    public void tokenUserIdEqualTest() {
+        Long userId = 1L;
+        String accessToken = jwtProvider.publishAccessToken(userId);
+        assertThat(jwtProvider.getIdFromToken(accessToken)).isEqualTo(userId);
+    }
 }
