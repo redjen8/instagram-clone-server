@@ -16,21 +16,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtProvider jwtProvider;
-
     // TODO : WebSecurityConfigurerAdapter 클래스 deprecation 으로 인한 변경 필요
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.formLogin().disable().headers().frameOptions().disable();
         http.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers(whitelistUriPatterns()).permitAll()
                 .and()
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+                .authorizeRequests().anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
