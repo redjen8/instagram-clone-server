@@ -32,14 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
-    @Bean
-    public JwtProvider jwtProvider() {
-        return new JwtProvider();
-    }
-
     private String[] whitelistUriPatterns() {
         return new String[]{
-                "/api/member/login/**"
+                "/member/login/**",
+                "/member/register/**"
         };
     }
 }

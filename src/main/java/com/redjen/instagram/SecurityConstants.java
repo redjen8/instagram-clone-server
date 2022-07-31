@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class SecurityConstants {
 
-    @Value("${jwt.secret}")
-    public static final String JWT_SECRET_KEY = "";
+    public static final String JWT_SECRET_KEY = "cmVkamVuc3ByaW5nbWFzdGVyaW5zdGFncmFtY2xvbmVmdW4K";
     public static final String TOKEN_HEADER_PREFIX = "Bearer ";
 }
