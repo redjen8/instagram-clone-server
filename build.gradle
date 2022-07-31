@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.redjen'
@@ -42,9 +43,35 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.2'
+    // https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+    implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+    // https://mvnrepository.com/artifact/com.querydsl/querydsl-apt
+    implementation group: 'com.querydsl', name: 'querydsl-apt', version: '5.0.0'
 
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+def querydslSrcDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslSrcDir
+}
+
+sourceSets {
+    main.java.srcDir querydslSrcDir
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
