@@ -7,7 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
@@ -18,12 +18,12 @@ import static com.redjen.instagram.SecurityConstants.JWT_SECRET_KEY;
 
 @NoArgsConstructor
 @Log4j2
+@Component
 public class JwtProvider {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 1일
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     private static final String jwtKey = JWT_SECRET_KEY;
-
 
     public String getAccessTokenFromRequest(HttpServletRequest request) {
         return request.getHeader("access-token");
@@ -55,7 +55,7 @@ public class JwtProvider {
     }
 
     private Key getSignInKey(String secretKey) {
-        byte[] byteKey = jwtKey.getBytes(StandardCharsets.UTF_8);
+        byte[] byteKey = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(byteKey);
     }
 
