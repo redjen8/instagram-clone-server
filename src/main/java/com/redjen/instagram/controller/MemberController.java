@@ -1,6 +1,8 @@
 package com.redjen.instagram.controller;
 
 import com.redjen.instagram.domain.entity.Member;
+import com.redjen.instagram.domain.member.MemberLoginReqParam;
+import com.redjen.instagram.domain.member.MemberLoginResultToken;
 import com.redjen.instagram.domain.member.MemberRegisterParam;
 import com.redjen.instagram.domain.member.MemberRegisterResponse;
 import com.redjen.instagram.service.MemberService;
@@ -27,6 +29,12 @@ public class MemberController {
     public ResponseEntity<MemberRegisterResponse> joinMember(@Valid @RequestBody MemberRegisterParam memberRegisterParam) {
         Member res = memberService.register(memberRegisterParam);
         MemberRegisterResponse result = new MemberRegisterResponse(res.getMemberId(), "success");
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberLoginResultToken> loginMember(@Valid @RequestBody MemberLoginReqParam memberLoginReqParam) {
+        MemberLoginResultToken result = memberService.login(memberLoginReqParam);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
