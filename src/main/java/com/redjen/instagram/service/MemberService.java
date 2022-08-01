@@ -33,7 +33,7 @@ public class MemberService {
         if (isMemberExists.isPresent()) throw new CustomException(ErrorCode.REGISTER_ID_ALREADY_EXIST);
 
         Member newMember = Member.builder()
-                .id(memberRegisterParam.getUserId())
+                .userId(memberRegisterParam.getUserId())
                 .name(memberRegisterParam.getUserName())
                 .birthDate(memberRegisterParam.getBirthDate())
                 .password(passwordEncoder.encode(memberRegisterParam.getPassword()))
@@ -58,7 +58,7 @@ public class MemberService {
         return MemberLoginResultToken.builder()
                 .accessToken(loginToken.getAccessToken())
                 .refreshToken(loginToken.getRefreshToken())
-                .userId(userMember.getId())
+                .userId(userMember.getUserId())
                 .userIndex(userMember.getMemberId())
                 .build();
     }

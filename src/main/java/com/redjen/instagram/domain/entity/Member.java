@@ -19,7 +19,8 @@ public class Member implements Serializable {
     @Column(name="member_id")
     private Long memberId;
 
-    private String id;
+    @Column(name="user_id")
+    private String userId;
     private String password;
 
     @Column(name="phone_number")

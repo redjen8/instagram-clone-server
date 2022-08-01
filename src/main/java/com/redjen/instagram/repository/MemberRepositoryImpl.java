@@ -35,7 +35,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     public Optional<Member> findOneByMemberId(String userId) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(member)
-                .where(member.id.eq(userId))
+                .where(member.userId.eq(userId))
                 .fetchOne());
     }
 
