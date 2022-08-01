@@ -29,6 +29,9 @@ public class MemberService {
     }
 
     public Member register(MemberRegisterParam memberRegisterParam) {
+        Optional<Member> isMemberExists = memberRepository.findOneByMemberId(memberRegisterParam.getUserId());
+        if (isMemberExists.isPresent()) throw new CustomException(ErrorCode.REGISTER_ID_ALREADY_EXIST);
+
         Member newMember = Member.builder()
                 .id(memberRegisterParam.getUserId())
                 .name(memberRegisterParam.getUserName())
