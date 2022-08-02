@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface PostRepository {
 
     Post savePost(Post newPost, List<PostPhoto> postPhotoList);
-    Post modifyPost(Post newPost, Member member);
+    Post modifyPost(Post oldPost, String newBody);
     Long removePost(Post deletePost);
     Post findPostById(Long postId);
     Optional<List<Post>> findPostListByMember(Member member);
