@@ -60,4 +60,10 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .enabled(true)
                 .build());
     }
+
+    @Override
+    public Boolean checkMemberExists(Long id) {
+        Optional<Member> findMember = Optional.ofNullable(em.find(Member.class, id));
+        return findMember.isEmpty();
+    }
 }

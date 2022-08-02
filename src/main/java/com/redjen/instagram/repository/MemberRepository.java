@@ -12,5 +12,5 @@ public interface MemberRepository {
     Optional<Member> findOneByMemberId(String userId);
     String updateRefreshToken(Long id, String newToken);
     Optional<CustomUserDetails> convertMemberToCustomUserDetail(String userId);
-
+    Boolean checkMemberExists (Long id);
 }
