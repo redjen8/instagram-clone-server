@@ -29,8 +29,8 @@ public class MemberRepositoryImpl implements MemberRepository {
         em.persist(member);
     }
 
-    public Member findOneById(Long id) {
-        return em.find(Member.class, id);
+    public Optional<Member> findOneById(Long id) {
+        return Optional.ofNullable(em.find(Member.class, id));
     }
 
     public Optional<Member> findOneByMemberId(String userId) {
