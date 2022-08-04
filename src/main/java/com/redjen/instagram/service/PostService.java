@@ -42,8 +42,7 @@ public class PostService {
                 .createdAt(LocalDateTime.now())
                 .photoList(postPhotoList)
                 .build();
-        postRepository.savePost(newPost, postPhotoList);
-        return newPost;
+        return postRepository.savePost(newPost, postPhotoList);
     }
 
     public Post modifyPost() {
