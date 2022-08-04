@@ -5,6 +5,7 @@ import com.redjen.instagram.domain.common.ErrorCode;
 import com.redjen.instagram.domain.common.LoginToken;
 import com.redjen.instagram.domain.entity.Member;
 import com.redjen.instagram.domain.entity.Post;
+import com.redjen.instagram.domain.member.MemberGetPostListParam;
 import com.redjen.instagram.domain.member.MemberLoginReqParam;
 import com.redjen.instagram.domain.member.MemberLoginResultToken;
 import com.redjen.instagram.domain.member.MemberRegisterParam;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +70,11 @@ public class MemberService {
                 .build();
     }
 
-    public List<Post> getPostList() {
-        return postRepository.findPostListByMember();
+    public List<Post> getPostList(MemberGetPostListParam memberGetPostListParam) {
+        Optional<Member> memberExists = memberRepository.findOneByMemberId(memberGetPostListParam.getUserId());
+        memberExists.orElseThrow(() -> new CustomException(ErrorCode.POST_MEMBER_ID_NOT_EXIST));
+
+        Optional<List<Post>> memberPostList = postRepository.findPostListByMember(memberExists.get());
+        return memberPostList.orElse(Collections.emptyList());
     }
 }
