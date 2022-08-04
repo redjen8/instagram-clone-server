@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -46,10 +45,6 @@ public class PostService {
     }
 
     public Post modifyPost() {
-        return null;
-    }
-
-    public List<Post> getPostList() {
         return null;
     }
 

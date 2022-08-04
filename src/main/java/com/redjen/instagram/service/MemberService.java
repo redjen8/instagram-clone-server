@@ -4,14 +4,17 @@ import com.redjen.instagram.domain.common.CustomException;
 import com.redjen.instagram.domain.common.ErrorCode;
 import com.redjen.instagram.domain.common.LoginToken;
 import com.redjen.instagram.domain.entity.Member;
+import com.redjen.instagram.domain.entity.Post;
 import com.redjen.instagram.domain.member.MemberLoginReqParam;
 import com.redjen.instagram.domain.member.MemberLoginResultToken;
 import com.redjen.instagram.domain.member.MemberRegisterParam;
 import com.redjen.instagram.repository.MemberRepositoryImpl;
+import com.redjen.instagram.repository.PostRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,11 +22,13 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepositoryImpl memberRepository;
+    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public MemberService(MemberRepositoryImpl memberRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public MemberService(MemberRepositoryImpl memberRepository, PostRepository postRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.memberRepository = memberRepository;
+        this.postRepository = postRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -61,5 +66,9 @@ public class MemberService {
                 .userId(userMember.getUserId())
                 .userIndex(userMember.getMemberId())
                 .build();
+    }
+
+    public List<Post> getPostList() {
+        return postRepository.findPostListByMember();
     }
 }
