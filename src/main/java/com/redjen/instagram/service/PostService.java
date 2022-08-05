@@ -5,6 +5,7 @@ import com.redjen.instagram.domain.common.ErrorCode;
 import com.redjen.instagram.domain.entity.Member;
 import com.redjen.instagram.domain.entity.Post;
 import com.redjen.instagram.domain.entity.PostPhoto;
+import com.redjen.instagram.domain.post.ModifyPostParam;
 import com.redjen.instagram.domain.post.WritePostParam;
 import com.redjen.instagram.repository.MemberRepository;
 import com.redjen.instagram.repository.PostRepository;
@@ -44,8 +45,14 @@ public class PostService {
         return postRepository.savePost(newPost, postPhotoList);
     }
 
-    public Post modifyPost() {
-        return null;
+    public Post modifyPost(ModifyPostParam modifyPostParam) {
+        Post existPost = postRepository.findPostById(modifyPostParam.getPostId());
+        Optional<Member> authorMember = memberRepository.findOneById(modifyPostParam.getUserId());
+        authorMember.orElseThrow(() -> new CustomException(ErrorCode.POST_MEMBER_ID_NOT_EXIST));
+
+        if (!existPost.getAuthor().equals(authorMember.get())) throw new CustomException(ErrorCode.POST_MODIFY_MEMBER_ID_UNAUTHORIZED);
+
+        return postRepository.modifyPost(existPost, modifyPostParam.getNewPostBody());
     }
 
     public Boolean deletePost() {
